@@ -2,29 +2,30 @@ require('pg')
 require_relative("../db/sql_runner")
 require_relative("film")
 require_relative("customer")
+require_relative("screening")
 
 class Ticket
-  attr_accessor :customer_id, :film_id
+  attr_accessor :customer_id, :screening_id
   attr_reader :id
 
   def initialize(options)
     @id = options['id'].to_i if options['id']
     @customer_id = options['customer_id'].to_i
-    @film_id = options['film_id'].to_i
+    @screening_id = options['screening_id'].to_i
   end
 
   def save()
     sql = "INSERT INTO tickets
     (
       customer_id,
-      film_id
+      screening_id
     )
     VALUES
     (
       $1, $2
     )
     RETURNING id"
-    values = [@customer_id, @film_id]
+    values = [@customer_id, @screening_id]
     location = SqlRunner.run(sql, values).first()
     @id = location['id'].to_i
   end
@@ -33,13 +34,13 @@ class Ticket
     sql = "
     UPDATE tickets SET (
       customer_id,
-      film_id
+      screening_id
       ) =
       (
         $1, $2
       )
       WHERE id = $3"
-      values = [@customer_id, @film_id, @id]
+      values = [@customer_id, @screening_id, @id]
       db = SqlRunner.run(sql, values)
     end
 
@@ -62,4 +63,28 @@ class Ticket
     sql = "DELETE FROM tickets"
     SqlRunner.run(sql)
   end
+
+def self.film_by_id(id)
+  sql = "SELECT films.* FROM films WHERE films.id = $1"
+  values = [id]
+  films_hashes = SqlRunner.run(sql, values)
+  film = films_hashes.map {|film| Film.new(film)}
+  return film
 end
+
+def self.screening_by_id(id)
+  sql = "SELECT screenings.* FROM screenings WHERE screenings.id = $1"
+  values = [id]
+  films_hashes = SqlRunner.run(sql, values)
+  film = films_hashes.map {|film| Screening.new(film)}
+  return film
+end
+
+def self.most_sold()
+sql = "SELECT screening_id FROM tickets GROUP BY screening_id ORDER BY COUNT(*) DESC LIMIT 1"
+tickets = SqlRunner.run(sql)[0]['screening_id'].to_i
+return self.film_by_id(tickets)[0].title + " is the most popular film at: " + self.screening_by_id(tickets)[0].function_time.to_s
+end
+
+end
+# SELECT screening_id FROM tickets GROUP BY screening_id ORDER BY COUNT(*) DESC LIMIT    1;

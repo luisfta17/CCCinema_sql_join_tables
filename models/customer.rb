@@ -2,6 +2,7 @@ require('pg')
 require_relative("../db/sql_runner")
 require_relative("film")
 require_relative("ticket")
+require_relative("screening")
 
 class Customer
   attr_accessor :name, :funds
@@ -51,7 +52,7 @@ class Customer
   end
 
   def films()
-    sql = "SELECT films.* FROM films INNER JOIN tickets ON tickets.film_id = films.id WHERE tickets.customer_id = $1"
+    sql = "SELECT films.* FROM films INNER JOIN tickets ON tickets.screening_id = films.id WHERE tickets.customer_id = $1"
     values = [@id]
     films_hashes = SqlRunner.run(sql, values)
     film = films_hashes.map {|film| Film.new(film)}
@@ -63,11 +64,11 @@ class Customer
     return "This costumer has bought #{total_bought} ticket(s)"
   end
 
-  def buy_ticket(film)
-    if @funds >= film.price
-      @funds -= film.price
+  def buy_ticket(screening)
+    if @funds >= screening.film[0].price
+      @funds -= screening.film[0].price
       self.update()
-      newticket = Ticket.new ({ 'customer_id' => @id, 'film_id' => film.id })
+      newticket = Ticket.new ({ 'customer_id' => @id, 'screening_id' => screening.id })
       newticket.save()
     else
       "sorry you have not enough funds"

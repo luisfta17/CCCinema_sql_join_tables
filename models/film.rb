@@ -2,6 +2,7 @@ require('pg')
 require_relative("../db/sql_runner")
 require_relative("customer")
 require_relative("ticket")
+require_relative("screening")
 
 class Film
   attr_accessor :title, :price
