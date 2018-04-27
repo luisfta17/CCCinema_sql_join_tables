@@ -8,6 +8,8 @@ customer1 = Customer.new({ 'name' => 'Luis', 'funds' => '100'})
 customer1.save()
 customer2 = Customer.new({ 'name' => 'Peter Parker', 'funds' => '10'})
 customer2.save()
+customer3 = Customer.new({ 'name' => 'Davina', 'funds' => '1000'})
+customer3.save()
 film1 = Film.new({ 'title' => 'Infinity War', 'price' => '15'})
 film1.save()
 

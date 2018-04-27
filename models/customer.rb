@@ -58,6 +58,21 @@ class Customer
     return film
   end
 
+  def tickets_bought
+    total_bought = self.films.length
+    return "This costumer has bought #{total_bought} ticket(s)"
+  end
+
+  def buy_ticket(film)
+    if @funds >= film.price
+      @funds -= film.price
+      self.update()
+      newticket = Ticket.new ({ 'customer_id' => @id, 'film_id' => film.id })
+      newticket.save()
+    else
+      "sorry you have not enough funds"
+    end
+  end
 
   #CLASS METHODS
 

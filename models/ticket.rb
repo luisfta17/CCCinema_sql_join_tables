@@ -49,7 +49,6 @@ class Ticket
       db = SqlRunner.run(sql, values)
     end
 
-
     #CLASS METHODS
 
     def self.all()

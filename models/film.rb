@@ -58,6 +58,10 @@ class Film
       return customer
     end
 
+    def tickets_sold
+      total_bought = self.customers.length
+      return "This film has sold #{total_bought} ticket(s)"
+    end
 
     #CLASS METHODS
 
