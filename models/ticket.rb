@@ -86,5 +86,21 @@ tickets = SqlRunner.run(sql)[0]['screening_id'].to_i
 return self.film_by_id(tickets)[0].title + " is the most popular film at: " + self.screening_by_id(tickets)[0].function_time.to_s
 end
 
+# Ruby method to get most sold ticket
+
+def self.get_id()
+  array_of_tickets= self.all()
+  ids_array = []
+  for id in array_of_tickets
+    ids_array.push(id.screening_id)
+  end
+  return ids_array.uniq.max_by{ |i| ids_array.count( i ) }
 end
-# SELECT screening_id FROM tickets GROUP BY screening_id ORDER BY COUNT(*) DESC LIMIT    1;
+
+def self.most_sold_ruby()
+  popular = self.get_id()
+  return self.film_by_id(popular)[0].title + " is the most popular film at: " + self.screening_by_id(popular)[0].function_time.to_s
+end
+
+
+end
