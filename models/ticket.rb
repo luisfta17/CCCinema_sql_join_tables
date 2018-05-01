@@ -91,9 +91,11 @@ end
 def self.get_id()
   array_of_tickets= self.all()
   ids_array = []
-  for id in array_of_tickets
-    ids_array.push(id.screening_id)
-  end
+
+  ids_array = array_of_tickets.map { |ticket| ticket.screening_id}
+  # for id in array_of_tickets
+  #   ids_array.push(id.screening_id)
+  # end
   return ids_array.uniq.max_by{ |i| ids_array.count( i ) }
 end
 
